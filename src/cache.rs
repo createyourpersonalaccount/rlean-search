@@ -1,4 +1,4 @@
-//! On-disk XML cache for one-shot invocations.
+//! On-disk gzipped XML cache for one-shot invocations (`index.xml.gz`).
 
 use crate::index::SearchIndex;
 use crate::xml::{read_index_file, write_index_file};
@@ -6,7 +6,8 @@ use anyhow::Result;
 use std::path::{Path, PathBuf};
 
 pub const DEFAULT_CACHE_DIR: &str = ".rlean-search";
-pub const DEFAULT_CACHE_FILE: &str = "index.xml";
+/// Default cache filename: gzipped XML at the fastest compression level.
+pub const DEFAULT_CACHE_FILE: &str = "index.xml.gz";
 
 pub fn default_cache_path(root: impl AsRef<Path>) -> PathBuf {
     root.as_ref()

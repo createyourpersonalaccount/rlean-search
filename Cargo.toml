@@ -1,6 +1,6 @@
 [package]
 name = "rlean-search"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Type-aware search over Lean 4 theorems, lemmas, and axioms"
 license = "MIT"
@@ -10,6 +10,8 @@ authors = [
         ]
 readme = "README.md"
 repository = "https://github.com/createyourpersonalaccount/rlean-search"
+keywords = ["lean4", "loogle"]
+categories = ["command-line-utilities", "development-tools"]
 
 [[bin]]
 name = "rlean-search"
@@ -37,6 +39,7 @@ dashmap = "6"
 parking_lot = "0.12"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
 memchr = "2"
+flate2 = "1"
 
 [dev-dependencies]
 pretty_assertions = "1"

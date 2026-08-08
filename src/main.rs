@@ -33,7 +33,7 @@ enum Commands {
         #[arg(required = true)]
         paths: Vec<PathBuf>,
 
-        /// Output index XML path (default: <first-path>/.rlean-search/index.xml)
+        /// Output index path (default: <first-path>/.rlean-search/index.xml.gz; `.gz` is gzipped)
         #[arg(short, long)]
         output: Option<PathBuf>,
     },

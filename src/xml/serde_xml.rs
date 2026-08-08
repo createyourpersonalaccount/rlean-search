@@ -4,24 +4,56 @@ use crate::ast::{
     Binder, BinderKind, DeclKind, Declaration, IndexDocument, PackageInfo, TypeExpr, RLEAN_NS,
 };
 use anyhow::{anyhow, Context, Result};
+use flate2::read::GzDecoder;
+use flate2::write::GzEncoder;
+use flate2::Compression;
 use std::fs;
-use std::io::Write;
+use std::io::{Read, Write};
 use std::path::Path;
 
+/// Write an index document. Paths ending in `.gz` are gzip-compressed using the
+/// fastest compression level (intended for the default `index.xml.gz` cache).
 pub fn write_index_file(path: impl AsRef<Path>, doc: &IndexDocument) -> Result<()> {
+    let path = path.as_ref();
     let xml = index_to_xml(doc);
-    if let Some(parent) = path.as_ref().parent() {
+    if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let mut f = fs::File::create(path.as_ref())?;
-    f.write_all(xml.as_bytes())?;
+    let mut f = fs::File::create(path)
+        .with_context(|| format!("creating index {}", path.display()))?;
+    if is_gzip_path(path) {
+        // Fastest gzip mode for quick cache write/read.
+        let mut enc = GzEncoder::new(&mut f, Compression::fast());
+        enc.write_all(xml.as_bytes())?;
+        enc.finish()?;
+    } else {
+        f.write_all(xml.as_bytes())?;
+    }
     Ok(())
 }
 
+/// Read an index document. Paths ending in `.gz` are decoded with gzip.
 pub fn read_index_file(path: impl AsRef<Path>) -> Result<IndexDocument> {
-    let s = fs::read_to_string(path.as_ref())
-        .with_context(|| format!("reading index {}", path.as_ref().display()))?;
+    let path = path.as_ref();
+    let s = if is_gzip_path(path) {
+        let f = fs::File::open(path)
+            .with_context(|| format!("reading index {}", path.display()))?;
+        let mut dec = GzDecoder::new(f);
+        let mut buf = String::new();
+        dec.read_to_string(&mut buf)
+            .with_context(|| format!("gunzipping index {}", path.display()))?;
+        buf
+    } else {
+        fs::read_to_string(path)
+            .with_context(|| format!("reading index {}", path.display()))?
+    };
     xml_to_index(&s)
+}
+
+fn is_gzip_path(path: &Path) -> bool {
+    path.extension()
+        .and_then(|s| s.to_str())
+        .is_some_and(|ext| ext.eq_ignore_ascii_case("gz"))
 }
 
 pub fn index_to_xml(doc: &IndexDocument) -> String {
@@ -522,5 +554,40 @@ mod tests {
         assert_eq!(back.declarations.len(), 1);
         assert_eq!(back.declarations[0].name, "add_comm");
         assert_eq!(back.source_hash, "abc");
+    }
+
+    #[test]
+    fn gzip_roundtrip_index_xml_gz() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("index.xml.gz");
+        let mut doc = IndexDocument::new();
+        doc.source_hash = "gzip-test".into();
+        doc.declarations.push(Declaration {
+            kind: DeclKind::Lemma,
+            name: "sub_self".into(),
+            full_name: "Nat.sub_self".into(),
+            binders: vec![],
+            ty: TypeExpr::BinOp {
+                op: "=".into(),
+                left: Box::new(TypeExpr::BinOp {
+                    op: "-".into(),
+                    left: Box::new(TypeExpr::Ident("n".into())),
+                    right: Box::new(TypeExpr::Ident("n".into())),
+                }),
+                right: Box::new(TypeExpr::NatLit("0".into())),
+            },
+            type_surface: "n - n = 0".into(),
+            file: "Nat.lean".into(),
+            line: 1,
+            module: None,
+            namespace_path: vec![],
+            attributes: vec![],
+        });
+        write_index_file(&path, &doc).unwrap();
+        let bytes = std::fs::read(&path).unwrap();
+        assert_eq!(&bytes[..2], &[0x1f, 0x8b]);
+        let back = read_index_file(&path).unwrap();
+        assert_eq!(back.source_hash, "gzip-test");
+        assert_eq!(back.declarations[0].name, "sub_self");
     }
 }

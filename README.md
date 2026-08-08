@@ -25,8 +25,11 @@ cargo build --release
 
 ```bash
 rlean-search index path/to/Mathlib path/to/lean4/src \
-  -o .rlean-search/index.xml
+  -o .rlean-search/index.xml.gz
 ```
+
+The default cache is a **gzipped** XML file (`index.xml.gz`) written with the
+fastest gzip compression level for quick index dumps.
 
 Lake-aware discovery reads `lakefile.toml` / `lakefile.lean`, `srcDir`, and
 `lean_lib` roots, then walks `.lean` files (skipping `.lake`, `build`, etc.).

@@ -118,10 +118,16 @@ fn xml_cache_roundtrip() {
 #[test]
 fn cache_load_or_build() {
     let dir = tempfile::tempdir().unwrap();
-    let cache = dir.path().join("index.xml");
+    let cache = dir.path().join("index.xml.gz");
     let idx = load_or_build(&[demo_pkg()], &cache, true).unwrap();
     assert!(cache.exists());
     assert!(idx.len() > 0);
+    // Cache must be gzip-compressed (magic bytes 1f 8b).
+    let magic = std::fs::read(&cache).unwrap();
+    assert!(
+        magic.len() >= 2 && magic[0] == 0x1f && magic[1] == 0x8b,
+        "cache is not gzip"
+    );
     let idx2 = load_or_build(&[demo_pkg()], &cache, false).unwrap();
     assert_eq!(idx.len(), idx2.len());
     save_cache(&cache, &idx2).unwrap();
