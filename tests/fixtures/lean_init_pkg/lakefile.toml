@@ -1,0 +1,5 @@
+name = "leanInitSample"
+srcDir = "."
+
+[[lean_lib]]
+name = "Init"

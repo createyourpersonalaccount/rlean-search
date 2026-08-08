@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Schema for rlean-search index documents and protocol responses.
+  Target namespace: http://github.com/createyourpersonalaccount/rlean-search
+-->
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:rlean="http://github.com/createyourpersonalaccount/rlean-search"
+  targetNamespace="http://github.com/createyourpersonalaccount/rlean-search"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <xs:element name="index">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="package" type="rlean:PackageType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="declaration" type="rlean:DeclarationType" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="schema" type="xs:anyURI"/>
+      <xs:attribute name="created_at" type="xs:string"/>
+      <xs:attribute name="source_hash" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="PackageType">
+    <xs:sequence>
+      <xs:element name="srcDir" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="leanLib" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="root" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="DeclarationType">
+    <xs:sequence>
+      <xs:element name="attribute" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="binder" type="rlean:BinderType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="typeSurface" type="xs:string"/>
+      <xs:element name="type" type="rlean:TypeContainer"/>
+      <xs:element name="conclusion" type="rlean:ConclusionType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="kind" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="theorem"/>
+          <xs:enumeration value="lemma"/>
+          <xs:enumeration value="axiom"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="full_name" type="xs:string"/>
+    <xs:attribute name="file" type="xs:string"/>
+    <xs:attribute name="line" type="xs:positiveInteger"/>
+    <xs:attribute name="module" type="xs:string"/>
+    <xs:attribute name="namespace" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="BinderType">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+    <xs:attribute name="kind" type="xs:string"/>
+    <xs:attribute name="names" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ConclusionType">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+    <xs:attribute name="head" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="TypeContainer">
+    <xs:sequence>
+      <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Type expression elements (used inside type / conclusion) -->
+  <xs:element name="hole"/>
+  <xs:element name="namedHole">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ident">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="natLit">
+    <xs:complexType>
+      <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="binOp">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="left" type="rlean:TypeContainer"/>
+        <xs:element name="right" type="rlean:TypeContainer"/>
+      </xs:sequence>
+      <xs:attribute name="op" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="app">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="fn" type="rlean:TypeContainer"/>
+        <xs:element name="arg" type="rlean:TypeContainer"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="arrow">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="domain" type="rlean:TypeContainer"/>
+        <xs:element name="codomain" type="rlean:TypeContainer"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="forall" type="rlean:TypeContainer"/>
+  <xs:element name="exists" type="rlean:TypeContainer"/>
+  <xs:element name="pi" type="rlean:TypeContainer"/>
+  <xs:element name="raw" type="xs:string"/>
+
+  <!-- Protocol response -->
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="hit" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="typeSurface" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="full_name" type="xs:string"/>
+            <xs:attribute name="kind" type="xs:string"/>
+            <xs:attribute name="file" type="xs:string"/>
+            <xs:attribute name="line" type="xs:positiveInteger"/>
+            <xs:attribute name="score" type="xs:integer"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="type" type="xs:string"/>
+      <xs:attribute name="pattern" type="xs:string"/>
+      <xs:attribute name="count" type="xs:nonNegativeInteger"/>
+      <xs:attribute name="message" type="xs:string"/>
+      <xs:attribute name="declarations" type="xs:nonNegativeInteger"/>
+      <xs:attribute name="packages" type="xs:nonNegativeInteger"/>
+      <xs:attribute name="source_hash" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="search">
+    <xs:complexType>
+      <xs:attribute name="pattern" type="xs:string" use="required"/>
+      <xs:attribute name="limit" type="xs:positiveInteger"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

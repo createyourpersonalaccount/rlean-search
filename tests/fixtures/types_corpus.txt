@@ -1,0 +1,106 @@
+theorem	add_comm	∀ (n m : Nat), n + m = m + n
+theorem	add_assoc	∀ (n m k : Nat), (n + m) + k = n + (m + k)
+theorem	add_zero	∀ (n : Nat), n + 0 = n
+theorem	zero_add	∀ (n : Nat), 0 + n = n
+theorem	mul_comm	∀ (n m : Nat), n * m = m * n
+theorem	mul_assoc	∀ (n m k : Nat), (n * m) * k = n * (m * k)
+theorem	mul_one	∀ (n : Nat), n * 1 = n
+theorem	one_mul	∀ (n : Nat), 1 * n = n
+theorem	mul_zero	∀ (n : Nat), n * 0 = 0
+theorem	zero_mul	∀ (n : Nat), 0 * n = 0
+theorem	add_left_cancel	∀ {n m k : Nat}, n + m = n + k → m = k
+theorem	eq_zero_of_add_eq_zero	∀ {n m : Nat}, n + m = 0 → n = 0 ∧ m = 0
+theorem	succ_add	∀ (n m : Nat), (n + 1) + m = (n + m) + 1
+theorem	add_succ	∀ (n m : Nat), n + (m + 1) = (n + m) + 1
+theorem	le_refl	∀ (n : Nat), n ≤ n
+theorem	le_trans	∀ {n m k : Nat}, n ≤ m → m ≤ k → n ≤ k
+theorem	lt_irrefl	∀ (n : Nat), ¬ n < n
+theorem	not_lt_zero	∀ (n : Nat), ¬ n < 0
+theorem	zero_le	∀ (n : Nat), 0 ≤ n
+theorem	succ_le_succ	∀ {n m : Nat}, n ≤ m → n + 1 ≤ m + 1
+theorem	sub_self	∀ (n : Nat), n - n = 0
+theorem	zero_sub	∀ (n : Nat), 0 - n = 0
+theorem	sub_zero	∀ (n : Nat), n - 0 = n
+theorem	add_sub_cancel	∀ (n m : Nat), n + m - m = n
+theorem	and_comm	∀ {a b : Prop}, a ∧ b ↔ b ∧ a
+theorem	or_comm	∀ {a b : Prop}, a ∨ b ↔ b ∨ a
+theorem	not_not	∀ {a : Prop}, ¬¬a ↔ a
+theorem	iff_refl	∀ (a : Prop), a ↔ a
+theorem	Eq.trans	∀ {α : Sort u} {a b c : α}, a = b → b = c → a = c
+theorem	Eq.symm	∀ {α : Sort u} {a b : α}, a = b → b = a
+theorem	congrArg	∀ {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β), a₁ = a₂ → f a₁ = f a₂
+theorem	congr	∀ {α : Sort u} {β : Sort v} {f₁ f₂ : α → β} {a₁ a₂ : α}, f₁ = f₂ → a₁ = a₂ → f₁ a₁ = f₂ a₂
+axiom	sorryAx	∀ (α : Sort u) (synthetic : Bool), α
+axiom	Classical.choice	∀ {α : Sort u}, Nonempty α → α
+theorem	mul_left_comm	∀ (a b c : G), a * (b * c) = b * (a * c)
+theorem	mul_right_comm	∀ (a b c : G), a * b * c = a * c * b
+theorem	one_mul_eq_id	((1 : M) * ·) = id
+theorem	mul_one_eq_id	(· * (1 : M)) = id
+theorem	inv_involutive	Function.Involutive (Inv.inv : G → G)
+theorem	mul_eq_left	∀ {a b : M}, a * b = a ↔ b = 1
+theorem	mul_eq_right	∀ {a b : M}, a * b = b ↔ a = 1
+lemma	pow_add	∀ (a : M) (m n : ℕ), a ^ (m + n) = a ^ m * a ^ n
+lemma	pow_one	∀ (a : M), a ^ 1 = a
+lemma	pow_zero	∀ (a : M), a ^ 0 = 1
+lemma	one_pow	∀ (n : ℕ), (1 : M) ^ n = 1
+theorem	tsum_add	∑' i, (f i + g i) = ∑' i, f i + ∑' i, g i
+theorem	tsum_mul_left	∑' i, a * f i = a * ∑' i, f i
+theorem	tsum_const_smul	∑' i, c • f i = c • ∑' i, f i
+theorem	list_length_append	∀ (as bs : List α), (as ++ bs).length = as.length + bs.length
+theorem	list_length_map	∀ (f : α → β) (as : List α), (as.map f).length = as.length
+theorem	list_nil_append	∀ (as : List α), [] ++ as = as
+theorem	list_append_nil	∀ (as : List α), as ++ [] = as
+theorem	list_append_assoc	∀ (as bs cs : List α), (as ++ bs) ++ cs = as ++ (bs ++ cs)
+theorem	option_map_id	∀ (x : Option α), x.map id = x
+theorem	option_map_map	∀ (f : β → γ) (g : α → β) (x : Option α), (x.map g).map f = x.map (f ∘ g)
+theorem	nat_lt_succ_self	∀ (n : Nat), n < n + 1
+theorem	nat_le_add_right	∀ (n k : Nat), n ≤ n + k
+theorem	nat_le_add_left	∀ (n k : Nat), n ≤ k + n
+theorem	div_self	∀ {n : Nat}, n ≠ 0 → n / n = 1
+theorem	mod_self	∀ (n : Nat), n % n = 0
+theorem	add_mod	∀ (a b n : Nat), (a + b) % n = (a % n + b % n) % n
+theorem	mul_mod	∀ (a b n : Nat), (a * b) % n = (a % n * b % n) % n
+theorem	dvd_refl	∀ (a : Nat), a ∣ a
+theorem	dvd_trans	∀ {a b c : Nat}, a ∣ b → b ∣ c → a ∣ c
+theorem	dvd_mul_right	∀ (a b : Nat), a ∣ a * b
+theorem	dvd_mul_left	∀ (a b : Nat), a ∣ b * a
+theorem	and_true	∀ (p : Prop), p ∧ True ↔ p
+theorem	true_and	∀ (p : Prop), True ∧ p ↔ p
+theorem	or_false	∀ (p : Prop), p ∨ False ↔ p
+theorem	false_or	∀ (p : Prop), False ∨ p ↔ p
+theorem	imp_self	∀ (p : Prop), (p → p)
+theorem	not_and	∀ (p q : Prop), ¬(p ∧ q) ↔ ¬p ∨ ¬q
+theorem	not_or	∀ (p q : Prop), ¬(p ∨ q) ↔ ¬p ∧ ¬q
+theorem	forall_const	∀ (α : Sort u) (p : Prop), (α → p) ↔ (Nonempty α → p)
+theorem	exists_const	∀ (α : Sort u) [Nonempty α] (p : Prop), (∃ x : α, p) ↔ p
+theorem	Function.comp_assoc	∀ {α β γ δ} (f : γ → δ) (g : β → γ) (h : α → β), (f ∘ g) ∘ h = f ∘ g ∘ h
+theorem	id_comp	∀ {α β} (f : α → β), id ∘ f = f
+theorem	comp_id	∀ {α β} (f : α → β), f ∘ id = f
+lemma	smul_add	∀ (r : R) (x y : M), r • (x + y) = r • x + r • y
+lemma	add_smul	∀ (r s : R) (x : M), (r + s) • x = r • x + s • x
+lemma	one_smul	∀ (x : M), (1 : R) • x = x
+lemma	zero_smul	∀ (x : M), (0 : R) • x = 0
+lemma	smul_zero	∀ (r : R), r • (0 : M) = 0
+theorem	neg_neg	∀ (a : G), - -a = a
+theorem	neg_add	∀ (a b : G), -(a + b) = -b + -a
+theorem	add_left_neg	∀ (a : G), -a + a = 0
+theorem	add_right_neg	∀ (a : G), a + -a = 0
+theorem	sub_eq_add_neg	∀ (a b : G), a - b = a + -b
+theorem	sub_self_eq	∀ (a : G), a - a = 0
+theorem	add_sub_cancel_right	∀ (a b : G), a + b - b = a
+theorem	tsum_eq_zero	∑' i, f i = 0
+theorem	tsum_mul_tsum	∑' i, f i * ∑' j, g j = ∑' i, ∑' j, f i * g j
+theorem	finset_sum_add	∑ i ∈ s, (f i + g i) = ∑ i ∈ s, f i + ∑ i ∈ s, g i
+theorem	finset_sum_mul_left	∑ i ∈ s, a * f i = a * ∑ i ∈ s, f i
+theorem	prod_mul	∏ i ∈ s, (f i * g i) = (∏ i ∈ s, f i) * (∏ i ∈ s, g i)
+theorem	abs_neg	∀ (a : ℝ), | -a | = |a|
+theorem	abs_mul	∀ (a b : ℝ), |a * b| = |a| * |b|
+theorem	abs_add_le	∀ (a b : ℝ), |a + b| ≤ |a| + |b|
+theorem	le_antisymm	∀ {a b : α}, a ≤ b → b ≤ a → a = b
+theorem	lt_asymm	∀ {a b : α}, a < b → ¬ b < a
+theorem	ne_of_lt	∀ {a b : α}, a < b → a ≠ b
+theorem	ne_of_gt	∀ {a b : α}, a > b → a ≠ b
+theorem	max_comm	∀ (a b : α), max a b = max b a
+theorem	min_comm	∀ (a b : α), min a b = min b a
+theorem	max_self	∀ (a : α), max a a = a
+theorem	min_self	∀ (a : α), min a a = a
