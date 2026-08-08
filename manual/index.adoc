@@ -1,0 +1,151 @@
+= The rlean-search manual
+Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
+0.2.0
+:reproducible:
+:source-highlighter: pygments
+:toc:
+
+== Introduction
+
+The `rlean-search` utility is a humble search utility for Lean 4. Its
+search functionality is not as good as
+https://loogle.lean-lang.org/[loogle], but it is *much faster*. It was
+vibe-coded with Grok Build.
+
+`rlean-search` parses the source code of the Lean 4 projects and
+produces a cache file that it then loads into memory and runs queries
+on. It will probably miss very complicated types; use
+https://loogle.lean-lang.org/[loogle] for those.
+
+== Installation
+
+`rlean-search` is written in Rust and uses the Cargo build system. You
+can install it for your local user with:
+
+[,sh]
+----
+cargo install rlean-search
+----
+
+== Usage
+
+=== Search
+
+[#build-index]
+==== Build the index
+
+First you must build the index file. For Mathlib, you could do:
+
+[,sh]
+----
+rlean-search index /path/to/mathlib4
+----
+
+- This creates a cached index file named `index.xml.gz` under
+  `/path/to/mathlib4/.rlean-search/`.
+- The index file will be created automatically if you attempt to
+  search without running the above command first.
+- The indexing command is a slow operation, but it only needs to be
+  run once.
+
+==== Perform a search
+
+Now you can search Mathlib using:
+
+[,sh]
+----
+rlean-search search -p /path/to/mathlib4 '_ + _ = 0'
+----
+
+The search mechanism supports:
+
+1. Holes with `_`.
+2. Metavariables with `?a`.
+3. Searching the conclusion with `|- tsum _ = _ * tsum _`.
+
+=== Fast search with the daemon
+
+==== Launch the daemon
+
+Build the link:#build-index[index] and then run the daemon server:
+
+[,sh]
+----
+rlean-search daemon /path/to/mathlib4
+----
+
+NOTE: The daemon startup will be a little slow, even if the index has been built.
+
+The daemon by default runs on `127.0.0.1:7878`. Now clients can
+communicate with the daemon using either JSON or XML queries.
+
+==== Query with `rlean-search`
+
+The `rlean-search` utility provides a client:
+
+[,sh]
+----
+rlean-search query -p '_ + _ = 0' | jq
+----
+
+You will get the results back *instantly!* (We pipe the result to
+https://jqlang.org/[jq] for neat viewing.)
+
+==== Query with a script
+
+If you wish to query the daemon from your own script without invoking
+`rlean-search`, follow the steps:
+
+1. Establish a connection to `127.0.0.1:7878`.
+2. Send queries either in JSON or XML.
+3. Read the responses.
+
+===== Example query with JSON
+
+Send the following query:
+
+[,json]
+----
+{ "cmd": "search", "limit": 2, "pattern": "_ + _ = 0" }
+----
+
+IMPORTANT: The JSON query must be in a single line.
+NOTE: For this example we limit the results to only 2.
+
+The response will be a single line like this:
+
+[,json]
+----
+{"type":"search","pattern":"_ + _ = 0","count":2,"hits":[{"name":"Odd","full_name":"Odd","kind":"lemma","type_surface":"a ^ n + b ^ n = 0","file":"/home/grok/mathlib4/Mathlib/Algebra/Ring/Parity.lean","line":153,"score":149},{"name":"term","full_name":"term","kind":"axiom","type_surface":"∀ a b : ℚ, a + b = 0","file":"/home/grok/mathlib4/MathlibTest/Tactic/Grind/Grobner.lean","line":70,"score":147}]}
+----
+
+NOTE: The above command returned a result from Mathlib's test suite!
+You can perform subsequent filtering yourself on the result of the
+query, or you can delete the test suite from the Mathlib directory
+prior to building the link:#build-index[index].
+
+===== Example query with XML
+
+Send the following query:
+
+[,xml]
+----
+<rlean:search xmlns:rlean="http://github.com/createyourpersonalaccount/rlean-search" pattern="_ + _ = 0" limit="50"/>
+----
+
+IMPORTANT: The XML query must be in a single line.
+
+The response will be a multi-line response in XML.
+
+=== Command-line options
+
+`rlean-search` follows the command interface that `git`
+popularized. It has the following commands:
+
+- `index`
+- `search`
+- `daemon`
+- `query`
+
+Use with `--help` to learn more information about each command, for
+instance `rlean-search index --help`.
