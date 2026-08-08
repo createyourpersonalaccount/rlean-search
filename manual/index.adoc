@@ -1,6 +1,6 @@
 = The rlean-search manual
 Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
-0.2.0
+0.2.1
 :reproducible:
 :source-highlighter: pygments
 :toc:
