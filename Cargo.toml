@@ -1,6 +1,6 @@
 [package]
 name = "rlean-search"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "Type-aware search over Lean 4 theorems, lemmas, and axioms"
 license = "MIT"
@@ -8,7 +8,7 @@ authors = [
         "Nikolaos Chatzikonstantinou <nchatz314@gmail.com>",
         "Grok Build (built by xAI)"
         ]
-readme = "README.md"
+readme = "README.adoc"
 repository = "https://github.com/createyourpersonalaccount/rlean-search"
 keywords = ["lean4", "loogle"]
 categories = ["command-line-utilities", "development-tools"]

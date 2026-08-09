@@ -1,6 +1,6 @@
 = The rlean-search manual
 Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
-0.2.1
+0.2.2
 :reproducible:
 :source-highlighter: pygments
 :toc:
@@ -16,6 +16,9 @@ vibe-coded with Grok Build.
 produces a cache file that it then loads into memory and runs queries
 on. It will probably miss very complicated types; use
 https://loogle.lean-lang.org/[loogle] for those.
+
+The project repository is
+https://github.com/createyourpersonalaccount/rlean-search[here].
 
 == Installation
 

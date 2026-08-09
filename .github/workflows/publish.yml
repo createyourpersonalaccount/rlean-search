@@ -26,7 +26,7 @@ jobs:
       - name: Build documentation
         run: |
           mkdir -p _site
-          asciidoctor -o _site/index.html manual/index.adoc
+          asciidoctor -o _site/index.html README.adoc
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
