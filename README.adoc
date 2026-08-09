@@ -1,6 +1,6 @@
 = The rlean-search manual
 Nikolaos Chatzikonstantinou <nchatz314@gmail.com>
-0.2.2
+0.2.3
 :reproducible:
 :source-highlighter: pygments
 :toc:
@@ -18,7 +18,9 @@ on. It will probably miss very complicated types; use
 https://loogle.lean-lang.org/[loogle] for those.
 
 The project repository is
-https://github.com/createyourpersonalaccount/rlean-search[here].
+https://github.com/createyourpersonalaccount/rlean-search[here]. The
+manual may be viewed online
+https://createyourpersonalaccount.github.io/rlean-search[here].
 
 == Installation
 
@@ -31,6 +33,20 @@ cargo install rlean-search
 ----
 
 == Usage
+
+The typical usage is to search Mathlib. The steps are:
+
+1. Navigate to the Mathlib project root, for example
+   `mathlib4-4.32.2/Mathlib`.
+2. Execute `rlean-search daemon .`.
+3. The first time, this command will take a while as it builds the
+   index. Eventually it will print _INFO rlean_search::daemon: indexed
+   181543 declarations from 1 package(s)_.
+4. The server is now running on `127.0.0.1` on port `7878`.
+5. Query the server using `rlean-search query -p '_ + _ = 0'`.
+6. The response will be in JSON, and _*blazing fast*_!
+
+If you want to learn a bit more about `rlean-search`, read on!
 
 === Search
 

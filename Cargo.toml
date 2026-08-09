@@ -1,6 +1,6 @@
 [package]
 name = "rlean-search"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 description = "Type-aware search over Lean 4 theorems, lemmas, and axioms"
 license = "MIT"
